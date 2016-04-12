@@ -8,7 +8,7 @@ import Data.Array.IArray (listArray)
 import Data.Text (Text)
 
 import Parser.Util
-import Parser.Internal
+import Parser.GeomStaticMesh
 
 
 main :: IO ()
@@ -60,11 +60,13 @@ spec = let word = many1 letter in do
         ("List(\n\t0, 1, 1, 2, 3, 5, 8, 13\n)" :: Text) ~> arrayOf "List" decimal
           `shouldParse` listArray (0,7) [0,1,1,2,3,5,8,13]
   
-  describe "Internal" $ do
-    describe "triple" $
+    describe "triple" $ do
       it "parses a Vector triple" $
         ("Vector(1, 2, 3)" :: Text) ~> triple
           `shouldParse` (1, 2, 3)
+      it "parses a Vector triple (scientific notation test)" $
+        ("Vector(-4.768372e-007, -0.002371788, -1.665215)" :: Text) ~> triple
+          `shouldParse` (-4.768372e-007, -0.002371788, -1.665215)
 
     describe "vector" $
       it "parses a Vector field" $
@@ -80,3 +82,39 @@ spec = let word = many1 letter in do
       it "parses a Vector field for colour" $
         ("Vector(1, 2, 3)" :: Text) ~> colour
           `shouldParse` (1, 2, 3)
+
+    describe "listVector" $
+      it "parses a ListVector field" $
+        ("ListVector(\
+  \\n\tVector(1, 2, 3),\
+  \\n\tVector(3, 4, 5),\
+  \\n\tVector(5, 6, 7))" :: Text) ~> listVector
+          `shouldParse` listArray (0, 2)
+              [(1, 2, 3), (3, 4, 5), (5, 6, 7)]
+
+    describe "arrayVector" $
+      it "parses a ListVector field with vertices" $
+        ("ListVector(\
+  \\n\tVector(1, 2, 3),\
+  \\n\tVector(3, 4, 5),\
+  \\n\tVector(5, 6, 7))" :: Text) ~> arrayVector
+          `shouldParse` listArray (0, 2)
+              [(1, 2, 3), (3, 4, 5), (5, 6, 7)]
+
+    describe "arrayNormal" $
+      it "parses a ListVector field with normals" $
+        ("ListVector(\
+  \\n\tVector(1, 2, 3),\
+  \\n\tVector(3, 4, 5),\
+  \\n\tVector(5, 6, 7))" :: Text) ~> arrayNormal
+          `shouldParse` listArray (0, 2)
+              [(1, 2, 3), (3, 4, 5), (5, 6, 7)]
+
+    describe "arrayColour" $
+      it "parses a ListVector field with colours" $
+        ("ListVector(\
+  \\n\tVector(1, 2, 3),\
+  \\n\tVector(3, 4, 5),\
+  \\n\tVector(5, 6, 7))" :: Text) ~> arrayColour
+          `shouldParse` listArray (0, 2)
+              [(1, 2, 3), (3, 4, 5), (5, 6, 7)]
