@@ -1,4 +1,4 @@
-module Types where
+module Types.Internal where
 
 import Data.Array.IArray (Array)
 

@@ -1,8 +1,9 @@
-module GeomStaticMesh where
+module Types.GeomStaticMesh where
 
-import Types
 import Data.Array.IArray (Array)
 import Data.Text (Text)
+
+import Types.Internal
 
 
 type Vertices        = Array Int Vector

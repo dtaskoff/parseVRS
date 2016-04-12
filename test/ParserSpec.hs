@@ -8,6 +8,8 @@ import Data.Array.IArray (listArray)
 import Data.Text (Text)
 
 import Parser.Util
+import Parser.Internal
+
 
 main :: IO ()
 main = hspec spec
@@ -57,3 +59,24 @@ spec = let word = many1 letter in do
       it "parses a list of decimals to an array" $
         ("List(\n\t0, 1, 1, 2, 3, 5, 8, 13\n)" :: Text) ~> arrayOf "List" decimal
           `shouldParse` listArray (0,7) [0,1,1,2,3,5,8,13]
+  
+  describe "Internal" $ do
+    describe "triple" $
+      it "parses a Vector triple" $
+        ("Vector(1, 2, 3)" :: Text) ~> triple
+          `shouldParse` (1, 2, 3)
+
+    describe "vector" $
+      it "parses a Vector field" $
+        ("Vector(1, 2, 3)" :: Text) ~> vector
+          `shouldParse` (1, 2, 3)
+
+    describe "normal" $
+      it "parses a Vector field for normal" $
+        ("Vector(1, 2, 3)" :: Text) ~> normal
+          `shouldParse` (1, 2, 3)
+
+    describe "colour" $
+      it "parses a Vector field for colour" $
+        ("Vector(1, 2, 3)" :: Text) ~> colour
+          `shouldParse` (1, 2, 3)

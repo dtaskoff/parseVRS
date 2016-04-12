@@ -1,7 +1,8 @@
-module Node where
+module Types.Node where
 
-import Types
 import Data.Text (Text)
+
+import Types.Internal
 
 
 type Transform         = (Matrix, Vector)
