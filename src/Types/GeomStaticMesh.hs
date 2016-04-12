@@ -28,6 +28,3 @@ data GeomStaticMesh = GeomStaticMesh
   , gsmSmoothDerivs    :: SmoothDerivs 
   , gsmDynamicGeometry :: DynamicGeometry
   } deriving (Eq, Show)
-
-
-

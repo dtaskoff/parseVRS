@@ -73,3 +73,20 @@ arrayNormal = listVector
 -- | Parse a ListVector containing Vector fields for colours
 arrayColour :: Parser (Array Int Colour)
 arrayColour = listVector
+
+-- | Parse a ListInt field
+listInt :: Parser [Int]
+listInt = listOf "ListInt" decimal
+
+-- | Throw out semicolon after parsing
+end :: Parser a -> Parser a
+end = (<* char ';')
+
+-- | Parse a semicolon terminated field
+-- If parsing fails return a default value
+field :: a -> Parser a -> Parser a
+field opt p = option opt (skipSpace *> end p)
+
+-- | Discard a whole line
+skipLine :: Parser ()
+skipLine = skipWhile (/= '\n') >> skipSpace
