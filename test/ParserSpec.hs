@@ -8,7 +8,9 @@ import Data.Array.IArray (listArray)
 import Data.Text (Text)
 
 import Parser.Util
+import Parser.Node
 import Parser.GeomStaticMesh
+import Types.Node
 import Types.GeomStaticMesh
 
 
@@ -126,14 +128,14 @@ spec = let word = many1 letter in do
           `shouldParse` [0, 1, 1, 2, 3, 5, 8, 13]
 
     describe "end" $
-      it "parse a semicolon terminated text" $ do
+      it "parses a semicolon terminated text" $ do
         ("ListInt(0, 1, 1, 2, 3, 5, 8, 13);" :: Text) ~> end listInt
           `shouldParse` [0, 1, 1, 2, 3, 5, 8, 13]
         ("ListInt(0, 1, 1, 2, 3, 5, 8, 13);rest" :: Text) ~?> end listInt
           `leavesUnconsumed` "rest"
 
     describe "field" $
-      it "parse a semicolon terminated field which may be missing" $ do
+      it "parses a semicolon terminated field which may be missing" $ do
         ("ListInt(0, 1, 1, 2, 3, 5, 8, 13);" :: Text) ~> field [] listInt
           `shouldParse` [0, 1, 1, 2, 3, 5, 8, 13]
         ("Vector(0, 1, 1);" :: Text) ~> field [] listInt
@@ -145,6 +147,16 @@ spec = let word = many1 letter in do
       it "discards a line" $
         ("line#1\nline#2" :: Text) ~?> skipLine
           `leavesUnconsumed` "line#2"
+
+    describe "matrix" $
+      it "parses a matrix" $
+        ("Matrix(Vector(1, 0, 0),\
+  \Vector(0, -4.371139e-008, 1),\
+  \Vector(0, -1, -4.371139e-008))" :: Text) ~> matrix
+          `shouldParse` listArray (0, 2) [ (1, 0, 0)
+                                         , (0, -4.371139e-008, 1)
+                                         , (0, -1, -4.371139e-008)
+                                         ]
 
   describe "GeomStaticMesh" $ do
     describe "vertices" $
@@ -287,3 +299,68 @@ spec = let word = many1 letter in do
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             []
             False
+
+  describe "Node" $ do
+    describe "transform" $
+      it "parses a transform field" $
+        ("transform=Transform(\
+  \Matrix(Vector(1, 0, 0), Vector(0, -4.371139e-008, 1), Vector(0, -1, -4.371139e-008))\
+  \, Vector(0, 0, 7.825510978698731))" :: Text) ~> transform
+          `shouldParse` ( listArray (0, 2) [ (1, 0, 0)
+                                           , (0, -4.371139e-008, 1)
+                                           , (0, -1, -4.371139e-008)
+                                           ]
+                        , (0, 0, 7.825510978698731)
+                        )
+
+    describe "geometry" $
+      it "parses a geometry field" $
+        ("geometry=Mesh_1416943569" :: Text) ~> geometry
+          `shouldParse` "Mesh_1416943569"
+
+    describe "material" $
+      it "parses a material field" $
+        ("material=a1___Default@mtl_0" :: Text) ~> material
+          `shouldParse` "a1___Default@mtl_0"
+
+    describe "nsamples" $
+      it "parses a nsamples field" $
+        ("nsamples=1" :: Text) ~> nsamples
+          `shouldParse` 1
+
+    describe "visible" $
+      it "parses a visible field" $
+        ("visible=1" :: Text) ~> visible
+          `shouldParse` True
+
+    describe "transform" $
+      it "parses a primary_visibility field" $
+        ("primary_visibility=1" :: Text) ~> primaryVisibility
+          `shouldParse` True
+
+    describe "node" $
+      it "parses a node plugin" $
+        ("Node Metronome@node_1 {\
+  \\n\ttransform=Transform(\
+  \Matrix(Vector(1, 0, 0), Vector(0, -4.371139e-008, 1), Vector(0, -1, -4.371139e-008))\
+  \, Vector(0, 0, 7.825510978698731)\
+  \);\
+  \\n\tgeometry=Mesh_1416943569;\
+  \\n\tmaterial=a1___Default@mtl_0;\
+  \\n\tnsamples=1;\
+  \\n\tvisible=1;\
+  \\n\tprimary_visibility=1;\
+  \\n}" :: Text) ~> node
+          `shouldParse` Node
+            "Metronome@node_1"
+            ( listArray (0, 2) [ (1, 0, 0)
+                               , (0, -4.371139e-008, 1)
+                               , (0, -1, -4.371139e-008)
+                               ]
+            , (0, 0, 7.825510978698731)
+            )
+            "Mesh_1416943569"
+            "a1___Default@mtl_0"
+            1
+            True
+            True

@@ -90,3 +90,7 @@ field opt p = option opt (skipSpace *> end p)
 -- | Discard a whole line
 skipLine :: Parser ()
 skipLine = skipWhile (/= '\n') >> skipSpace
+
+-- | Parse a matrix
+matrix :: Parser Matrix
+matrix = arrayOf "Matrix" vector
