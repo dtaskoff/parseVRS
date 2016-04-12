@@ -4,12 +4,13 @@ module Parser.Node where
 import Data.Attoparsec.Text
 import Control.Applicative (liftA2)
 import Data.Char (isSpace)
+import Data.Array.IArray (listArray)
 
 import Types.Node
 import Parser.Util
 
 
--- The following parser parse their corresponding
+-- The following parsers parse the corresponding
 -- fields in the Node plugin
 
 transform :: Parser Transform
@@ -40,7 +41,9 @@ node = do
   skipSpace
   braces $
     Node name <$> 
-      field undefined transform <*>
+      field ( listArray (1, 0) []
+            , (0, 0, 0)
+            ) transform <*>
       field "" geometry <*>
       field "" material <*>
       field 0 nsamples <*>

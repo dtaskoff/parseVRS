@@ -17,15 +17,18 @@ library
   exposed-modules:   Parser.Util
                    , Parser.Node
                    , Parser.GeomStaticMesh
+                   , Parser.VRScene
                    , Types.Internal
                    , Types.Node
                    , Types.GeomStaticMesh
+                   , Types.VRScene
   default-language:  Haskell2010
-  
-  build-depends:     base       >= 4.7      && < 5
-                   , attoparsec >= 0.13.0.1 && < 0.13.1
-                   , text       >= 1.2.2.1  && < 1.2.3
-                   , array      >= 0.5.1.0  && < 0.5.2
+     
+  build-depends:     base                 >= 4.7      && < 5
+                   , attoparsec           >= 0.13.0.1 && < 0.13.1
+                   , text                 >= 1.2.2.1  && < 1.2.3
+                   , array                >= 0.5.1.0  && < 0.5.2
+                   , unordered-containers >= 0.2.5.1  && < 0.2.6
   
   ghc-options:       -Wall -fwarn-tabs -O
 
@@ -35,10 +38,11 @@ test-suite test
   main-is:           Spec.hs
   default-language:  Haskell2010
 
-  build-depends:     base             >= 4.7     && < 5
+  build-depends:     base                 >= 4.7     && < 5
                    , parseVRS
-                   , hspec            >= 2.2.3   && < 2.3
-                   , hspec-attoparsec >= 0.1.0.2 && < 0.1.1
-                   , attoparsec >= 0.13.0.1 && < 0.13.1
-                   , array      >= 0.5.1.0  && < 0.5.2
-                   , text       >= 1.2.2.1  && < 1.2.3
+                   , hspec                >= 2.2.3   && < 2.3
+                   , hspec-attoparsec     >= 0.1.0.2 && < 0.1.1
+                   , attoparsec           >= 0.13.0.1 && < 0.13.1
+                   , array                >= 0.5.1.0  && < 0.5.2
+                   , text                 >= 1.2.2.1  && < 1.2.3
+                   , unordered-containers >= 0.2.5.1  && < 0.2.6

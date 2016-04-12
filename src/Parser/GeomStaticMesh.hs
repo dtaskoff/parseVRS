@@ -4,12 +4,13 @@ module Parser.GeomStaticMesh where
 import Data.Attoparsec.Text
 import Control.Applicative (liftA3)
 import Data.Char (isSpace)
+import Data.Array.IArray (listArray)
 
 import Types.GeomStaticMesh
 import Parser.Util
 
 
--- The following parser parse their corresponding
+-- The following parsers parse the corresponding
 -- fields in the GeomStaticMesh plugin
 
 vertices :: Parser Vertices
@@ -52,9 +53,9 @@ geomStaticMesh = do
   skipSpace
   braces $
     GeomStaticMesh name <$> 
-      field undefined vertices <*> 
+      field (listArray (1, 0) []) vertices <*> 
       field [] faces <*> 
-      field undefined normals <*> 
+      field (listArray (1, 0) []) normals <*> 
       field [] faceNormals <*> 
       field [] mapChannels <*> 
       field [] edgeVisibility <*> 

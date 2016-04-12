@@ -6,12 +6,15 @@ import Test.Hspec.Attoparsec
 import Data.Attoparsec.Text
 import Data.Array.IArray (listArray)
 import Data.Text (Text)
+import Data.HashMap.Lazy (singleton)
 
 import Parser.Util
 import Parser.Node
 import Parser.GeomStaticMesh
+import Parser.VRScene
 import Types.Node
 import Types.GeomStaticMesh
+import Types.VRScene
 
 
 main :: IO ()
@@ -242,7 +245,17 @@ spec = let word = many1 letter in do
           `shouldParse` False
 
     describe "geomStaticMesh" $
-      it "parses a GeomStaticMesh plugin" $
+      it "parses a GeomStaticMesh plugin" $ do
+        ("GeomStaticMesh Mesh_1416943569 {\
+  \\n}" :: Text) ~> geomStaticMesh
+          `shouldParse` GeomStaticMesh
+            "Mesh_1416943569"
+            (listArray (1, 0) [])
+            []
+            (listArray (1, 0) [])
+            [] [] [] [] []
+            False
+
         ("GeomStaticMesh Mesh_1416943569 {\
   \\n\tvertices=ListVector(\
   \\n\t\tVector(-4.156086, -7.002372, -0.04999952),\
@@ -364,3 +377,31 @@ spec = let word = many1 letter in do
             1
             True
             True
+
+  describe "VRScene" $ do
+    describe "vrscene" $
+      it "parses a vrscene" $
+        ("/////////////////////////////////////////\
+  \\n// Exported by V-Ray Plugins Exporter\
+  \\n/////////////////////////////////////////\
+  \\n\
+  \\nGeomStaticMesh Mesh_1416943569 {\
+  \\n}\
+  \\n\
+  \\nNode Metronome@node_1 {\
+  \\n\tgeometry=Mesh_1416943569;\
+  \\n}" :: Text) ~> vrscene
+          `shouldParse` VRScene n m
+            where n = singleton "Metronome@node_1" $
+                    Node "Metronome@node_1"
+                         ( listArray (1, 0) []
+                         , (0, 0, 0)
+                         )
+                         "Mesh_1416943569"
+                         "" 0 False False
+                  m = singleton "Mesh_1416943569" $
+                    GeomStaticMesh "Mesh_1416943569"
+                    (listArray (1, 0) [])
+                    []
+                    (listArray (1, 0) [])
+                    [] [] [] [] [] False
