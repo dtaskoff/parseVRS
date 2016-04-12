@@ -18,6 +18,7 @@ library
                    , Parser.Node
                    , Parser.GeomStaticMesh
                    , Parser.VRScene
+                   , Parser
                    , Types.Internal
                    , Types.Node
                    , Types.GeomStaticMesh

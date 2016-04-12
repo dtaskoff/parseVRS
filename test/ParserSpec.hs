@@ -6,12 +6,13 @@ import Test.Hspec.Attoparsec
 import Data.Attoparsec.Text
 import Data.Array.IArray (listArray)
 import Data.Text (Text)
-import Data.HashMap.Lazy (singleton)
+import Data.HashMap.Lazy (singleton, empty)
 
 import Parser.Util
 import Parser.Node
 import Parser.GeomStaticMesh
 import Parser.VRScene
+import Parser
 import Types.Node
 import Types.GeomStaticMesh
 import Types.VRScene
@@ -378,7 +379,7 @@ spec = let word = many1 letter in do
             True
             True
 
-  describe "VRScene" $ do
+  describe "VRScene" $
     describe "vrscene" $
       it "parses a vrscene" $
         ("/////////////////////////////////////////\
@@ -391,17 +392,43 @@ spec = let word = many1 letter in do
   \\nNode Metronome@node_1 {\
   \\n\tgeometry=Mesh_1416943569;\
   \\n}" :: Text) ~> vrscene
-          `shouldParse` VRScene n m
-            where n = singleton "Metronome@node_1" $
-                    Node "Metronome@node_1"
-                         ( listArray (1, 0) []
-                         , (0, 0, 0)
-                         )
-                         "Mesh_1416943569"
-                         "" 0 False False
-                  m = singleton "Mesh_1416943569" $
-                    GeomStaticMesh "Mesh_1416943569"
-                    (listArray (1, 0) [])
-                    []
-                    (listArray (1, 0) [])
-                    [] [] [] [] [] False
+          `shouldParse` VRScene
+      (singleton "Metronome@node_1" $
+      Node "Metronome@node_1"
+      ( listArray (1, 0) []
+      , (0, 0, 0)
+      )
+      "Mesh_1416943569"
+      "" 0 False False)
+    (singleton "Mesh_1416943569" $
+      GeomStaticMesh "Mesh_1416943569"
+      (listArray (1, 0) [])
+      []
+      (listArray (1, 0) [])
+      [] [] [] [] [] False)
+
+  describe "parseVRScene" $
+    it "parses a vrscene from a text" $
+      parseVRScene "/////////////////////////////////////////\
+  \\n// Exported by V-Ray Plugins Exporter\
+  \\n/////////////////////////////////////////\
+  \\n\
+  \\nGeomStaticMesh Mesh_1416943569 {\
+  \\n}\
+  \\n\
+  \\nNode Metronome@node_1 {\
+  \\n\tgeometry=Mesh_1416943569;\
+  \\n}" `shouldBe` VRScene
+      (singleton "Metronome@node_1" $
+        Node "Metronome@node_1"
+        ( listArray (1, 0) []
+        , (0, 0, 0)
+        )
+        "Mesh_1416943569"
+        "" 0 False False)
+      (singleton "Mesh_1416943569" $
+        GeomStaticMesh "Mesh_1416943569"
+        (listArray (1, 0) [])
+        []
+        (listArray (1, 0) [])
+        [] [] [] [] [] False)
