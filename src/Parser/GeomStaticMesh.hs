@@ -8,30 +8,6 @@ import Data.Char (isSpace)
 import Types.GeomStaticMesh
 import Parser.Util
 
-{-
-type Vertices        = Array Int Vector
-type Faces           = [Int]
-type Normals         = Array Int Normal
-type FaceNormals     = [Int]
-type MapChannels     = [(Int, Array Int Colour, [Int])]
-type EdgeVisibility  = [Int]
-type FaceMtlIDs      = [Int]
-type SmoothDerivs    = [Int]
-type DynamicGeometry = Bool
-
-data GeomStaticMesh = GeomStaticMesh
-  { gsmName            :: Text
-  , gsmVertices        :: Vertices
-  , gsmFaces           :: Faces
-  , gsmNormals         :: Normals
-  , gsmFaceNormals     :: FaceNormals
-  , gsmMapChannels     :: MapChannels
-  , gsmEdgeVisibility  :: EdgeVisibility
-  , gsmFaceMtlIDs      :: FaceMtlIDs
-  , gsmSmoothDerivs    :: SmoothDerivs 
-  , gsmDynamicGeometry :: DynamicGeometry
-  } deriving (Eq, Show)
--}
 
 -- The following parser parse their corresponding
 -- fields in the GeomStaticMesh plugin
