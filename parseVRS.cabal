@@ -31,7 +31,7 @@ library
                    , array                >= 0.5.1.0  && < 0.5.2
                    , unordered-containers >= 0.2.5.1  && < 0.2.6
   
-  ghc-options:       -Wall -fwarn-tabs -O
+  ghc-options:       -Wall -fwarn-tabs -O2
 
 test-suite test
   type:              exitcode-stdio-1.0
