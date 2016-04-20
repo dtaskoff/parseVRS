@@ -1,6 +1,5 @@
 module Types.VRScene where
 
-import Data.Array.IArray (Array)
 import Data.Text (Text)
 import Data.HashMap.Lazy (HashMap)
 
